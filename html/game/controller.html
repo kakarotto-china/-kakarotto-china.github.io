@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <title>Joy Controller</title>
+     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+ integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+<!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+ integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" />
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+ integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+ crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <h3>{{message}}</h3>
+        <div style="border: 1px black solid;">
+            控制器: {{joyid}} <br>
+            保持连接: {{turbo}} <br>
+            <!-- 手柄布局: {{mapping}} <br> -->
+            按键布局: {{buttons}} <br>
+            按键缓存: {{buttonsCache}} <br>
+            当前按键: {{buttonsStatus}} <br>
+            按键坐标: {{axesStatus}} <br>
+        </div>
+        <div style="border: 1px black solid;">
+            <div>
+                <button @click="setKeyMapAll">手柄校准</button>
+            </div>
+            <span @click="setKeyMap('DPad-Up')">上</span> <span @click="setKeyMap('DPad-Down')">下</span> <span
+                @click="setKeyMap('DPad-Left')">左</span> <span @click="setKeyMap('DPad-Right')">右</span>
+            <span @click="setKeyMap('Start')">开始</span> <span @click="setKeyMap('Back')">选择</span>
+            <span @click="setKeyMap('Axis-Left')">扳机左</span> <span @click="setKeyMap('Axis-Right')">扳机右</span>
+            <span @click="setKeyMap('LB')">按钮左</span> <span @click="setKeyMap('RB')">按钮右</span>
+            <span @click="setKeyMap('A')">A</span> <span @click="setKeyMap('B')">B</span> <span
+                @click="setKeyMap('X')">X</span> <span @click="setKeyMap('Y')">Y</span>
+            <span @click="setKeyMap('Power')">Power</span> <span @click="setKeyMap(null)">null</span>
+        </div>
+        <div class="sprite">精灵</div>
+
+        <div class="modalA" v-show="showSetKeyMap" style="text-align: center;"><font class="center" style="font-size: 200px;">{{setKeyMapMessage}}</font></div>
+    </div>
+</body>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: '未连接控制器',
+            setKeyMapMessage: '',
+            controller:{},
+            joyid:'',
+            turbo: false,
+            buttons: ['DPad-Up', 'DPad-Down', 'DPad-Left', 'DPad-Right',
+                'Start', 'Back', 'Axis-Left', 'Axis-Right',
+                'LB', 'RB', 'Power', 'A', 'B', 'X', 'Y', null],
+            // buttons1: [ "A", "B", "X", "Y", "LB", "RB", "Axis-Left", "Axis-Right", "Back", "Start", "Power", null, "DPad-Up", "DPad-Down", "DPad-Left", "DPad-Right" ],
+            buttonsCache: [],
+            buttonsStatus: [],
+            axesStatus: [],
+            showSetKeyMap: false,
+        },
+        methods: {
+            connect: function (evt) {
+                console.log('控制器已连接。');
+                this.controller = evt.gamepad;
+                this.turbo = true;
+                this.message = '控制器已连接。'
+                this.joyid = this.controller.id
+                // 启动监听
+                this.monitor()
+            },
+            disconnect: function (evt) {
+                this.message = '控制器已断开。'
+                this.turbo = false;
+                delete this.controller;
+                this.joyid= ''
+                console.log('控制器已断开。');
+            },
+            update: function () {
+                // 清除按钮缓存
+                this.buttonsCache = [];
+                // 从上一帧中移动按钮状态到缓存中
+                for (var k = 0; k < this.buttonsStatus.length; k++) {
+                    this.buttonsCache[k] = this.buttonsStatus[k];
+                }
+                // 清除按钮状态
+                this.buttonsStatus = [];
+                // 获取 gamepad 对象
+                var c = this.controller || {};
+
+                // 遍历按键，并将按下的按钮加到数组中
+                var pressed = [];
+                if (c.buttons) {
+                    for (var b = 0, t = c.buttons.length; b < t; b++) {
+                        if (c.buttons[b].pressed) {
+                            pressed.push(this.buttons[b]);
+                        }
+                    }
+                }
+                // 遍历坐标值并加到数组中
+                var axes = [];
+                if (c.axes) {
+                    for (var a = 0, x = c.axes.length; a < x; a++) {
+                        axes.push(c.axes[a].toFixed(2));
+                    }
+                }
+                // 分配接收到的值
+                this.axesStatus = axes;
+                this.buttonsStatus = pressed;
+                // 返回按钮以便调试
+                return pressed;
+            },
+            buttonPressed: function (button, hold) {
+                var newPress = false;
+                // 轮询按下的按钮
+                for (var i = 0, s = this.buttonsStatus.length; i < s; i++) {
+                    // 如果我们找到我们想要的按钮
+                    if (this.buttonsStatus[i] == button) {
+                        // 设置布尔变量（newPress）为 true
+                        newPress = true;
+                        // 如果我们想检查按住还是单次按下
+                        if (!hold) {
+                            // 从上一帧轮询缓存状态
+                            for (var j = 0, p = this.buttonsCache.length; j < p; j++) {
+                                // 如果按钮（之前）已经被按下了则忽略新的按下状态
+                                if (this.buttonsCache[j] == button) {
+                                    newPress = false;
+                                }
+                            }
+                        }
+                    }
+                }
+                return newPress;
+            },
+            monitor() {
+                this.controller = navigator.getGamepads().item()
+                this.update()
+                if (this.turbo) {
+                    if (this.buttonPressed('DPad-Up', 'hold')) {
+                        this.moveup()
+                    }
+                    if (this.buttonPressed('DPad-Left', 'hold')) {
+                        this.moveleft()
+                    }
+                    if (this.buttonPressed('DPad-Down', 'hold')) {
+                        this.movedown()
+                    }
+                    if (this.buttonPressed('DPad-Right', 'hold')) {
+                        this.moveright()
+                    }
+                    if (this.buttonPressed('A', 'hold')) {
+                        this.turbo_fire();
+                    }
+                    if (this.buttonPressed('B')) {
+                        this.managePause();
+                    }
+                    if (this.buttonPressed('X')) {
+                        this.turbo_fire();
+                    }
+                    if (this.buttonPressed('Y')) {
+                        this.managePause();
+                    }
+                }
+                requestAnimationFrame(this.monitor)
+            },
+            turbo_fire() {
+                console.log("A hold")
+            },
+            managePause() {
+                console.log("pause")
+            },
+            moveup() {
+                var sprite = document.getElementsByClassName("sprite")[0]
+                if (0 >= sprite.offsetTop) {
+                    return
+                }
+                sprite.style.top = sprite.offsetTop - 8 + 'px'
+            },
+            moveleft() {
+                var sprite = document.getElementsByClassName("sprite")[0]
+                if (0 >= sprite.offsetLeft) {
+                    return
+                }
+                sprite.style.left = sprite.offsetLeft - 8 + 'px'
+            },
+            movedown() {
+                var sprite = document.getElementsByClassName("sprite")[0]
+                if (window.innerHeight <= sprite.offsetTop + sprite.clientHeight) {
+                    return
+                }
+                sprite.style.top = sprite.offsetTop + 8 + 'px'
+            },
+            moveright() {
+                var sprite = document.getElementsByClassName("sprite")[0]
+                if (window.innerWidth <= sprite.offsetLeft + sprite.clientWidth) {
+                    return
+                }
+                sprite.style.left = sprite.offsetLeft + 8 + 'px'
+            },
+            setKeyMap(bindKey) {
+                this.setKeyMapMessage = '设置按键[' + bindKey + ']'
+                this.showSetKeyMap = true
+                // 获取 gamepad 对象
+                var c = this.controller || {};
+
+                // 遍历按键，并将按下的按钮加到数组中
+                var pressed = [];
+                if (c.buttons) {
+                    for (var b = 0, t = c.buttons.length; b < t; b++) {
+                        if (c.buttons[b].pressed) {
+                            pressed.push(this.buttons[b]);
+                        }
+                    }
+                }
+                console.log(pressed)
+                if (0 == pressed.length) {
+                    requestAnimationFrame(() => {
+                        this.setKeyMap(bindKey)
+                    })
+                    return
+                }
+
+                // 重新绑定按键
+                var presse = pressed[0]
+                var orginalKeyButtonsIndex = 0
+                var bindKeyInButtonsIndex = 0;
+                for (var b = 0, t = this.buttons.length; b < t; b++) {
+                    if (bindKey == this.buttons[b]) {
+                        orginalKeyButtonsIndex = b
+                    }
+                    if (presse == this.buttons[b]) {
+                        bindKeyInButtonsIndex = b
+                    }
+                }
+                var temp = this.buttons[orginalKeyButtonsIndex]
+                this.buttons[orginalKeyButtonsIndex] = this.buttons[bindKeyInButtonsIndex]
+                this.buttons[bindKeyInButtonsIndex] = temp
+
+                this.showSetKeyMap = false
+            },
+            setKeyMapAll(){
+                alert('点击以下圆形按钮分别设置按键')
+                // this.setKeyMap('DPad-Up')
+                // this.setKeyMap('DPad-Down')
+                // this.setKeyMap('DPad-Left')
+                // this.setKeyMap('DPad-Right')
+                // this.setKeyMap('Start')
+                // this.setKeyMap('Back')
+                // this.setKeyMap('Axis-Left')
+                // this.setKeyMap('DPad-Right')
+                // this.setKeyMap('LB')
+                // this.setKeyMap('RB')
+                // this.setKeyMap('Power')
+                // this.setKeyMap('A')
+                // this.setKeyMap('B')
+                // this.setKeyMap('X')
+                // this.setKeyMap('Y')
+                // this.setKeyMap(null)
+            }
+        },
+        created() {
+            // var gamepadAPI = {
+            //     controller: {},
+            //     turbo: false,
+            //     connect: function (evt) {
+            //         gamepadAPI.controller = evt.gamepad;
+            //         gamepadAPI.turbo = true;
+            //         console.log('控制器已连接。');
+            //     },
+            //     disconnect: function (evt) {
+            //         gamepadAPI.turbo = false;
+            //         delete gamepadAPI.controller;
+            //         console.log('控制器已断开。');
+            //     },
+            //     update: function () {
+            //         // 清除按钮缓存
+            //         gamepadAPI.buttonsCache = [];
+            //         // 从上一帧中移动按钮状态到缓存中
+            //         for (var k = 0; k < gamepadAPI.buttonsStatus.length; k++) {
+            //             gamepadAPI.buttonsCache[k] = gamepadAPI.buttonsStatus[k];
+            //         }
+            //         // 清除按钮状态
+            //         gamepadAPI.buttonsStatus = [];
+            //         // 获取 gamepad 对象
+            //         var c = gamepadAPI.controller || {};
+
+            //         // 遍历按键，并将按下的按钮加到数组中
+            //         var pressed = [];
+            //         if (c.buttons) {
+            //             for (var b = 0, t = c.buttons.length; b < t; b++) {
+            //                 if (c.buttons[b].pressed) {
+            //                     pressed.push(gamepadAPI.buttons[b]);
+            //                 }
+            //             }
+            //         }
+            //         // 遍历坐标值并加到数组中
+            //         var axes = [];
+            //         if (c.axes) {
+            //             for (var a = 0, x = c.axes.length; a < x; a++) {
+            //                 axes.push(c.axes[a].toFixed(2));
+            //             }
+            //         }
+            //         // 分配接收到的值
+            //         gamepadAPI.axesStatus = axes;
+            //         gamepadAPI.buttonsStatus = pressed;
+            //         // 返回按钮以便调试
+            //         return pressed;
+            //     },
+            //     buttonPressed: function (button, hold) {
+            //         var newPress = false;
+            //         // 轮询按下的按钮
+            //         for (var i = 0, s = gamepadAPI.buttonsStatus.length; i < s; i++) {
+            //             // 如果我们找到我们想要的按钮
+            //             if (gamepadAPI.buttonsStatus[i] == button) {
+            //                 // 设置布尔变量（newPress）为 true
+            //                 newPress = true;
+            //                 // 如果我们想检查按住还是单次按下
+            //                 if (!hold) {
+            //                     // 从上一帧轮询缓存状态
+            //                     for (var j = 0, p = gamepadAPI.buttonsCache.length; j < p; j++) {
+            //                         // 如果按钮（之前）已经被按下了则忽略新的按下状态
+            //                         if (gamepadAPI.buttonsCache[j] == button) {
+            //                             newPress = false;
+            //                         }
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //         return newPress;
+            //     },
+            //     buttons: ['DPad-Up', 'DPad-Down', 'DPad-Left', 'DPad-Right',
+            //         'Start', 'Back', 'Axis-Left', 'Axis-Right',
+            //         'LB', 'RB', 'Power', 'A', 'B', 'X', 'Y',],
+            //     buttonsCache: [],
+            //     buttonsStatus: [],
+            //     axesStatus: []
+            // }
+            // window.addEventListener("gamepadconnected", gamepadAPI.connect);
+            // window.addEventListener("gamepaddisconnected", gamepadAPI.disconnect);
+            window.addEventListener("gamepadconnected", this.connect);
+            window.addEventListener("gamepaddisconnected", this.disconnect);
+        },
+        filters: {
+             isNon(obj){
+                return obj?obj:''
+            }
+        }
+    })
+
+
+</script>
+<style>
+    span {
+        font-size: 20px;
+        border: 1px black solid;
+        border-radius: 50%;
+    }
+
+    .sprite {
+        position: absolute;
+        background-color: cyan;
+        top: 100px;
+        left: 100px;
+    }
+
+    .modalA {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        background: rgba(0, 0, 0, 0.4);
+        width: 100%;
+        /*宽度设置为100%，这样才能使隐藏背景层覆盖原页面*/
+        height: 100%;
+        filter: alpha(opacity=60);
+        /*设置透明度为60%*/
+        opacity: 0.6;
+        /*非IE浏览器下设置透明度为60%*/
+        z-Index: 1;
+    }
+    .center{
+        position: absolute;
+        left: 15%;
+        top: 25%;
+    }
+</style>
+</html>
