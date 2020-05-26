@@ -14,7 +14,7 @@ body {
 
 .grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 2fr;
+    grid-template-columns: 4fr 1fr 1fr 4fr;
     height: 100%;
     grid-template-rows: 32fr 1fr 1fr 64fr;
     grid-gap: 1%;
