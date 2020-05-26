@@ -16,6 +16,8 @@
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!-- 添加加密插件-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
 <head>
     <meta charset="UTF-8">
     <title>廊庭画色浅</title>
@@ -23,7 +25,7 @@
 <body>
 <div id="app" class="grid">
     <div class="gird-header">
-        <p>没有密码? 联系作者</p>
+        <p>{{ callme }}</p>
         <input class="form-control" type="password" v-model="password" @focus="password = '', message = '验证'"
                placeholder="验证您的身份">
     </div>
@@ -33,7 +35,6 @@
 </div>
 </body>
 <link rel="stylesheet" href="./css/index.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
 <script src="js/plugin/FileSaver.js"></script>
 <script src="./js/index.js"></script>
 </html>

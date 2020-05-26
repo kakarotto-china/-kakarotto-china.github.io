@@ -1,6 +1,7 @@
 let app = new Vue({
     el: "#app",
     data: {
+        callme: "没有密码?联系作者",
         password: "",
         message: "验证",
     },
@@ -28,12 +29,15 @@ let app = new Vue({
 
 
 let ciphertext = "21d3ee46c0a3642e81fda4869c4ae360"
-let protocolPage = "/kakarotto-china.github.io/html/directories.html"
+let protocolPage = "./html/directories.html"
 
 window.onload = function () {
     login = getCookie("login")
     if (login === ciphertext) {
-        window.location.href = protocolPage
+        app.callme = "已登录, 正在跳转... 过期时间: " + getCookie("login-expires")
+        setTimeout(()=>{
+            window.location.href = protocolPage
+        }, 5000)
     }
 }
 
@@ -52,8 +56,10 @@ let md5Encrypt = function (word, times = 1) {
 // 写cookies
 let setCookie = function (name, value, days = 30) {
     var exp = new Date();
-    exp.setTime(exp.getTime() + days * 24 * 60 * 60 * 1000);
+    time = exp.getTime() + days * 24 * 60 * 60 * 1000
+    exp.setTime(time);
     document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+    document.cookie = name + "-expires=" + escape(exp.toLocaleString()) + ";expires=" + exp.toGMTString();
 }
 
 // 读取cookies
