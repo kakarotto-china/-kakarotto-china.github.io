@@ -6,7 +6,7 @@ let app = new Vue({
     },
     methods: {
         login() {
-            encrypt = md5Encrypt(this.password, 10);
+            encrypt = md5Encrypt(this.password, this.password.length);
             console.log(encrypt)
             if (ciphertext !== encrypt) {
                 this.message = "验证失败"
@@ -27,7 +27,7 @@ let app = new Vue({
 })
 
 
-let ciphertext = "734d5807701d8d462419b8edc04729c4"
+let ciphertext = "21d3ee46c0a3642e81fda4869c4ae360"
 let protocolPage = "/kakarotto-china.github.io/html/directories.html"
 
 window.onload = function () {
@@ -58,9 +58,9 @@ let setCookie = function (name, value, days = 30) {
 
 // 读取cookies
 let getCookie = function (name) {
-    var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-
-    if (arr = document.cookie.match(reg)) {
+    reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    arr = document.cookie.match(reg)
+    if (arr) {
         return unescape(arr[2]);
     } else {
         return null;
