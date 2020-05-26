@@ -1,0 +1,79 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+.grid {
+    /*border: 1px black solid;*/
+    display: grid;
+    grid-template-columns: 1fr 4fr 8fr 1fr;
+    grid-template-rows: 1fr 1fr 64fr 1fr;
+    height: 100%;
+    grid-row-gap: 0.2%;
+    grid-column-gap: 0.2%;
+    grid-template-areas: ". . . ." ". header header ." ". content content ." ". . . .";
+}
+
+.grid-header {
+    grid-area: header;
+    /*border: 1px red solid;*/
+}
+
+.grid-content {
+    grid-area: content;
+    /*border: 1px red solid;*/
+}
+
+.grid-1 {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-row-gap: 5%;
+    grid-column-gap: 0.2%;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-row-gap: 5%;
+    grid-column-gap: 0.2%;
+}
+
+.grid-left {
+    text-align: center;
+}
+
+.grid-right {
+    text-align: center;
+}
+
+.grid-1 div {
+    background-color: darksalmon;
+}
+
+.grid-2 div:nth-child(4n+1) {
+    background-color: beige;
+}
+
+.grid-2 div:nth-child(4n+2) {
+    background-color: beige;
+}
+
+.grid-2 div:nth-child(4n+3) {
+    background-color: aliceblue;
+}
+
+.grid-2 div:nth-child(4n+4) {
+    background-color: aliceblue;
+}
+
+a {
+    text-decoration-line: none;
+}
+
+/*.grid div {*/
+/*    border: red 1px solid;*/
+/*}*/
