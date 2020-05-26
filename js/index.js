@@ -2,7 +2,7 @@ let app = new Vue({
     el: "#app",
     data: {
         password: "",
-        message: "",
+        message: "验证",
     },
     methods: {
         login() {

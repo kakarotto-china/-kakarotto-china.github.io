@@ -1,4 +1,39 @@
-body{
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
     background-image: url("../resources/image/background.jpg");
     background-color: #ffffff;
 }
+
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    height: 100%;
+    grid-template-rows: 32fr 1fr 1fr 64fr;
+    grid-gap: 1%;
+    grid-template-areas: ". . . ." ". header header ." ". content content ." ". . . .";
+}
+
+.gird-header {
+    grid-area: header;
+}
+
+p {
+    text-align: center;
+}
+
+.gird-content {
+    grid-area: content;
+}
+
+.grid div {
+    /*border: 1px red solid;*/
+}
+
