@@ -3,31 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
-    <link rel="stylesheet" type="text/css" href="../css/html/directories.css" />
+    <link rel="stylesheet" type="text/css" href="../css/html/directories.css"/>
     <title>目录</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
-<div class="grid">
-    <div class="grid-header">
-        <div class="grid-1">
-            <div class="grid-left">
-                <p>链接</p>
-            </div>
-            <div class="grid-right">
-                <p>描述</p>
-            </div>
+<div id="app" class="grid">
+
+    <div class="grid-content grid-1">
+        <div class="box" v-for="el in list" :id="el.name" @click="goto(el.url)">
+            <ul>
+                <li style="color: #76cfff; list-style-type:none;">{{el.name}}</li>
+                <li style="color: #ff88d7; list-style-type:none; font-size: 10px">{{el.desc}}</li>
+            </ul>
         </div>
     </div>
-    <div class="grid-content">
-        <div class="grid-2">
-            <div class="grid-left">
-                <a href="./game/controller.html">Joy Controller</a>
-            </div>
-            <div class="grid-right">
-                <p>游戏手柄调试</p>
-            </div>
-        </div>
-    </div>
+
 </div>
 </body>
+<script src="../js/html/directories.js"></script>
 </html>
