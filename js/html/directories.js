@@ -4,7 +4,7 @@ let app = new Vue({
         list: [{
                 name: "Joy Controller",
                 url: "./game/controller.html",
-                desc: "游戏手柄控制器调试"
+                desc: "游戏手柄控制器 调试"
             },
             {
                 name: "Baidu",
@@ -19,27 +19,27 @@ let app = new Vue({
             {
                 name: "Github",
                 url: "http://github.com",
-                desc: "开源代码托管平台"
+                desc: "开源 代码托管平台"
             },
             {
                 name: "码云",
                 url: "http://gitee.com",
-                desc: "国内开源代码托管平台"
+                desc: "国内开源 代码托管平台"
             },
             {
                 name: "B站",
                 url: "http://bilibili.com",
-                desc: "哔哩哔哩视频弹幕网站"
+                desc: "哔哩哔哩 视频弹幕网站"
             },
             {
                 name: "斗鱼",
                 url: "http://douyu.com",
-                desc: "斗鱼直播平台"
+                desc: "斗鱼 直播平台"
             },
             {
                 name: "虎牙",
-                url: "http://huya.com.com",
-                desc: "虎牙直播平台"
+                url: "http://huya.com",
+                desc: "虎牙 直播平台"
             },
             {
                 name: "永恒de草薙",
@@ -50,7 +50,7 @@ let app = new Vue({
     },
     methods: {
         goto(url){
-            window.location.href = url
+            window.open(url)
         }
     },
     created(){},
