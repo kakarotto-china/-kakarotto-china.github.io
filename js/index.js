@@ -34,9 +34,21 @@ let protocolPage = "./html/directories.html"
 window.onload = function () {
     login = getCookie("login")
     if (login === ciphertext) {
-        app.callme = "已登录, 正在跳转... 过期时间: " + getCookie("login-expires")
-        setTimeout(()=>{
+        // 禁用表单元素
+        $('input').attr("disabled", true);
+        $('button').attr("disabled", true);
+
+        // 显示提示信息
+        loginExpires = getCookie("login-expires")
+        timer = 5
+        intervalId = window.setInterval(() => {
+            app.callme = `已登录, ${timer--}s后跳转... 过期时间: ${loginExpires}`
+        }, 1000)
+
+        // 清除倒计时, 并跳转页面
+        window.setTimeout(() => {
             window.location.href = protocolPage
+            window.clearInterval(intervalId)
         }, 5000)
     }
 }
