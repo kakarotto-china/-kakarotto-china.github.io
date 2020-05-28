@@ -61,6 +61,11 @@
         "name": "Joy Controller",
         "url": "./game/controller.html",
         "desc": "游戏手柄控制器 调试"
+      },
+      {
+        "name": "Music Visualization",
+        "url": "./media/music-visualization.html",
+        "desc": "音频可视化"
       }
     ]
   }
