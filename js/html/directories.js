@@ -1,11 +1,7 @@
 let app = new Vue({
     el: "#app",
     data: {
-        list: [{
-                name: "Joy Controller",
-                url: "./game/controller.html",
-                desc: "游戏手柄控制器 调试"
-            },
+        searchList: [
             {
                 name: "Baidu",
                 url: "http://baidu.com",
@@ -16,16 +12,8 @@ let app = new Vue({
                 url: "http://google.com",
                 desc: "谷歌"
             },
-            {
-                name: "Github",
-                url: "http://github.com",
-                desc: "开源 代码托管平台"
-            },
-            {
-                name: "码云",
-                url: "http://gitee.com",
-                desc: "国内开源 代码托管平台"
-            },
+        ],
+        mediaList: [
             {
                 name: "B站",
                 url: "http://bilibili.com",
@@ -45,6 +33,25 @@ let app = new Vue({
                 name: "永恒de草薙",
                 url: "https://live.ixigua.com/room/6831486448986753800/",
                 desc: "西瓜视频 永恒[三国]直播"
+            },
+        ],
+        developList: [
+            {
+                name: "Github",
+                url: "http://github.com",
+                desc: "开源 代码托管平台"
+            },
+            {
+                name: "码云",
+                url: "http://gitee.com",
+                desc: "国内开源 代码托管平台"
+            },
+        ],
+        myList: [
+            {
+                name: "Joy Controller",
+                url: "./game/controller.html",
+                desc: "游戏手柄控制器 调试"
             },
         ]
     },
