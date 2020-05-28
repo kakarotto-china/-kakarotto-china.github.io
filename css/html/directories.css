@@ -30,7 +30,7 @@ li {
     /*border: 1px red solid;*/
     display: grid;
     grid-template-columns: 10% auto 10%;
-    grid-template-rows: 20% auto;
+    grid-template-rows: 5% auto;
     grid-template-areas: ". . ." ". content ." ;
 }
 
