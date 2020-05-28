@@ -11,43 +11,10 @@
 <div id="app" class="grid">
 
     <div class="grid-content">
-        <div class="grid-content-item">
-            <p>搜索</p>
+        <div class="grid-content-item" v-for="list in contentList" :id="list.category">
+            <p>{{list.category}}</p>
             <div class="flex">
-                <div class="box" v-for="el in searchList" :id="el.name" @click="goto(el.url)">
-                    <ul>
-                        <li class="color-blue font-size-name">{{el.name}}</li>
-                        <li class="color-red font-size-desc">{{el.desc}}</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="grid-content-item">
-            <p>影音直播</p>
-            <div class="flex">
-                <div class="box" v-for="el in mediaList" :id="el.name" @click="goto(el.url)">
-                    <ul>
-                        <li class="color-blue font-size-name">{{el.name}}</li>
-                        <li class="color-red font-size-desc">{{el.desc}}</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="grid-content-item">
-            <p>开发者</p>
-            <div class="flex">
-                <div class="box" v-for="el in developList" :id="el.name" @click="goto(el.url)">
-                    <ul>
-                        <li class="color-blue font-size-name">{{el.name}}</li>
-                        <li class="color-red font-size-desc">{{el.desc}}</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="grid-content-item">
-            <p>自定义</p>
-            <div class="flex">
-                <div class="box" v-for="el in myList" :id="el.name" @click="goto(el.url)">
+                <div class="box" v-for="el in list.content" :id="el.name" @click="goto(el.url)">
                     <ul>
                         <li class="color-blue font-size-name">{{el.name}}</li>
                         <li class="color-red font-size-desc">{{el.desc}}</li>
